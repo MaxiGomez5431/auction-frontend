@@ -4,6 +4,7 @@ export interface User {
   username: string | null;
   isVerified: boolean;
   isAdmin: boolean;
+  createdAt: string;
 }
 
 export interface LoginCredentials {
@@ -22,7 +23,6 @@ export interface AuthResponse {
   user: User;
 }
 
-// types/auction.ts
 export interface Artwork {
   id: number;
   title: string;
@@ -56,4 +56,18 @@ export interface Auction {
 export interface CreateBidDto {
   amount: number;
   auctionId: number;
+}
+
+export interface CreateArtworkDto {
+  title: string;
+  description: string;
+  imageUrl?: string;
+}
+
+export interface CreateAuctionDto {
+  artworkId: number;
+  startingPrice: number;
+  minimumIncrement: number;
+  startTime: string;
+  endTime: string;
 }

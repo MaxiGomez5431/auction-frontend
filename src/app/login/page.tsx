@@ -29,7 +29,6 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-  console.log('LOGIN PAGE MOUNT');
 }, []);
 
   const onSubmit = async (data: LoginForm) => {

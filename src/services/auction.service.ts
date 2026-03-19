@@ -14,21 +14,9 @@ export const auctionService = {
     return data;
   },
 
-  // Obtener subastas activas
-  async getActive(): Promise<Auction[]> {
-    const { data } = await api.get('/auction/active');
-    return data;
-  },
-
   // Crear una puja
   async createBid(bidData: CreateBidDto): Promise<Bid> {
     const { data } = await api.post('/bid', bidData);
-    return data;
-  },
-
-  // Obtener pujas de una subasta
-  async getBids(auctionId: number): Promise<Bid[]> {
-    const { data } = await api.get(`/auction/${auctionId}/bid`);
     return data;
   },
 };

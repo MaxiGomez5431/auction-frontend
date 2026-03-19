@@ -1,4 +1,3 @@
-// contexts/AuthContext.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
@@ -30,15 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const token = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
 
-        console.log('📦 Cargando desde localStorage:', { 
-          token: token ? '✅ presente' : '❌ ausente', 
-          storedUser: storedUser ? '✅ presente' : '❌ ausente' 
-        });
-
         if (token && storedUser) {
-          // ¡IMPORTANTE! Parsear el usuario
           const parsedUser = JSON.parse(storedUser);
-          console.log('👤 Usuario parseado:', parsedUser);
           
           // Verificar que el usuario tiene la estructura correcta
           if (parsedUser && typeof parsedUser === 'object') {

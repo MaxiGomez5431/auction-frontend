@@ -31,7 +31,6 @@ export function AuctionBidsList({ auction }: AuctionBidsListProps) {
 
       {bids.length === 0 ? (
         <div className="text-center py-12">
-          <Coins />
           <p className="text-gray-500 text-lg mb-2">
             No hay pujas aún
           </p>

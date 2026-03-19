@@ -1,28 +1,7 @@
+import { AuthResponse, LoginCredentials, RegisterCredentials, User } from '@/types/types';
 import api from '../lib/axios';
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
 
-export interface RegisterCredentials {
-  email: string;
-  password: string;
-  username?: string;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  username: string | null;
-  isVerified: boolean;
-  isAdmin: boolean;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  user: User;
-}
 
 export const authService = {
   async login(credentials: LoginCredentials) {

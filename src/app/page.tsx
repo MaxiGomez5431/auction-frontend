@@ -1,4 +1,5 @@
 import { auctionService } from '@/services/auction.service';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { AuctionList } from '../components/AuctionList';
 import { Suspense } from 'react';
 
@@ -13,14 +14,6 @@ async function getAuctions() {
     console.error('Error fetching auctions:', error);
     return []; // Devolver array vacío en caso de error
   }
-}
-
-function LoadingComponent() {
-  return (
-    <div className="flex items-center justify-center py-12">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-    </div>
-  );
 }
 
 export default async function HomePage() {
@@ -43,7 +36,7 @@ export default async function HomePage() {
           Subastas Disponibles
         </h2>
         
-        <Suspense fallback={<LoadingComponent />}>
+        <Suspense fallback={<LoadingSpinner />}>
           <AuctionList auctions={auctions} />
         </Suspense>
       </section>

@@ -164,13 +164,13 @@ export function AuctionDetails({ auction }: AuctionDetailsProps) {
                     Incremento mínimo
                   </p>
                   <p className="text-2xl font-bold text-purple-600">
-                    ${auction.minimumIncrement.toLocaleString()}
+                    ${auction.minimumIncrement.toLocaleString('es-ES')}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-purple-600">Próxima oferta mínima</p>
                   <p className="text-xl font-semibold text-purple-700">
-                    ${(currentPrice + auction.minimumIncrement).toLocaleString()}
+                    ${(currentPrice + auction.minimumIncrement).toLocaleString('es-ES')}
                   </p>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export function AuctionDetails({ auction }: AuctionDetailsProps) {
             {auction.status === 'FINISHED' && auction.currentBid && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <p className="text-green-700 text-sm flex items-center">
-                  Subasta finalizada - Ganador: {auction.currentBid.user?.username || 'Usuario'} por ${auction.currentBid.amount}
+                  Subasta finalizada - Ganador con puja de ${auction.currentBid.amount}
                 </p>
               </div>
             )}

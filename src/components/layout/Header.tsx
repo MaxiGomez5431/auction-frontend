@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEffect, useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 export function Header() {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -25,24 +26,34 @@ export function Header() {
       }`}>
       <nav className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo / Título de la app */}
-          <Link href="/" className="text-xl font-bold text-blue-600 hover:text-blue-700">
-            Subastas de Arte
-          </Link>
+          {
+            user ? (
+              <span className="text-gray-700">
+                Bienvenido, <span className="font-semibold">{user.username || user.email}</span>
+              </span>
+            ) : (
+            <Link href="/" className="text-xl font-bold text-blue-600 hover:text-blue-700">
+              Subastas de Arte
+            </Link>
+            )
+          }
 
           {/* Menú de navegación - visible en desktop */}
           <div className="hidden md:flex items-center space-x-4">
-
+            <Link
+              href="/"
+              className="bg-gray-100 px-4 py-2 text-gray-900 rounded-md hover:bg-gray-200 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Inicio
+            </Link>
             {/* Contenido condicional según autenticación */}
             {!isAuthenticated ? (
               // Usuario NO autenticado
               <div className="flex items-center space-x-2">
-                <Link href="/" className="text-gray-700 hover:text-blue-600">
-                  Subastas
-                </Link>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium"
+                  className="px-4 py-2 bg-blue-100 text-blue-600 rounded-md hover:text-blue-700 font-medium"
                 >
                   Iniciar Sesión
                 </Link>
@@ -56,16 +67,12 @@ export function Header() {
             ) : (
               // Usuario SÍ autenticado
               <div className="flex items-center space-x-4">
-                {/* Mensaje de bienvenida */}
-                <span className="text-gray-700">
-                   Bienvenido, <span className="font-semibold">{user?.username || user?.email}</span>
-                </span>
 
                 {/* Botón de Admin (solo visible para admins) */}
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200"
+                    className="px-4 py-2 bg-purple-100 text-purple-700 rounded-md hover:bg-purple-200"
                   >
                     Panel Admin
                   </Link>
@@ -87,13 +94,13 @@ export function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            
               {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <X />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <Menu />
               )}
-            </svg>
+            
           </button>
         </div>
 
@@ -103,10 +110,10 @@ export function Header() {
             <div className="flex flex-col space-y-3">
               <Link
                 href="/"
-                className="text-gray-700 hover:text-blue-600 px-2 py-1"
+                className="bg-gray-100 px-4 py-2 text-gray-900 rounded-md hover:bg-gray-200 text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Subastas
+                Inicio
               </Link>
 
               {!isAuthenticated ? (
@@ -131,21 +138,18 @@ export function Header() {
                   {isAdmin && (
                     <Link
                       href="/admin"
-                      className="text-purple-600 hover:text-purple-700 px-2 py-1"
+                      className="bg-purple-100 px-4 py-2 text-purple-700 rounded-md hover:bg-purple-200 text-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Panel Admin
                     </Link>
                   )}
-                  <span className="text-gray-700 px-2 py-1">
-                    Bienvenido, {user?.username || user?.email}
-                  </span>
                   <button
                     onClick={() => {
                       logout();
                       setIsMenuOpen(false);
                     }}
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-left"
+                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-center"
                   >
                     Cerrar Sesión
                   </button>
