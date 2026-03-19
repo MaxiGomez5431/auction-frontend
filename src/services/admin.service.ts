@@ -56,4 +56,9 @@ export const adminService = {
     );
     return response;
   },
+
+    async deleteUser(id: number) {
+    const { data } = await api.delete(`auth/user/${id}`);
+    return data;
+  },
 };

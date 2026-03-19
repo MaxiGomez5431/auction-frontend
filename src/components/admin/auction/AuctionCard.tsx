@@ -7,14 +7,16 @@ import { StatusBadge } from './StatusBadge';
 import { PriceCard } from './PriceCard';
 import { DateDisplay } from './DateDisplay';
 import { FinishAuctionButton } from './FinishAuctionButton';
+import { DeleteButton } from '../../ui/DeleteButton';
 
 interface AuctionCardProps {
   auction: Auction;
   onFinish: (id: number) => Promise<void>;
   isFinishing: boolean;
+  onDelete: (id: number) => Promise<void>;
 }
 
-export function AuctionCard({ auction, onFinish, isFinishing }: AuctionCardProps) {
+export function AuctionCard({ auction, onFinish, isFinishing, onDelete }: AuctionCardProps) {
   const currentPrice = auction.currentBid?.amount || auction.startingPrice;
 
   return (
@@ -34,7 +36,15 @@ export function AuctionCard({ auction, onFinish, isFinishing }: AuctionCardProps
             </p>
           </div>
         </div>
-        <StatusBadge status={auction.status} />
+
+        <div className="flex items-center gap-2">
+          <StatusBadge status={auction.status} />
+          <DeleteButton 
+            id={auction.id} 
+            type="auction"
+            onDelete={onDelete} 
+          />
+        </div>
       </div>
 
       {/* Grid de precios */}

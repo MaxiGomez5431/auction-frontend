@@ -11,6 +11,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { EmptyState } from '@/components/admin/auction/EmptyState';
 import { AuctionCard } from '@/components/admin/auction/AuctionCard';
+import { AxiosError } from 'axios';
 
 export default function AuctionsPage() {
   const [auctions, setAuctions] = useState<Auction[]>([]);
@@ -21,6 +22,19 @@ export default function AuctionsPage() {
   useEffect(() => {
     loadAuctions();
   }, []);
+
+  const deleteAuction = async (auctionId: number) => {
+    try {
+      await adminService.deleteAuction(auctionId);
+      setAuctions(auctions.filter(auction => auction.id !== auctionId));
+    } catch (error: unknown) {
+    let errorMessage = 'Error al eliminar la subasta';
+    if (error instanceof AxiosError && error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    }
+    setError(errorMessage);
+    }
+  };
   
   const loadAuctions = async () => {
     try {
@@ -89,6 +103,7 @@ export default function AuctionsPage() {
               key={auction.id}
               auction={auction}
               onFinish={finishAuction}
+              onDelete={deleteAuction}
               isFinishing={finishingId === auction.id}
             />
           ))}

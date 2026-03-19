@@ -7,11 +7,13 @@ import { Artwork } from '../../../types/types';
 import Link from 'next/link';
 import { Plus, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { DeleteButton } from '../../../components/ui/DeleteButton';
+import { ErrorMessage } from '../../../components/ui/ErrorMessage';
 
 export default function ArtworksPage() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); // ← Un solo estado para errores
 
   useEffect(() => {
     loadArtworks();
@@ -26,6 +28,18 @@ export default function ArtworksPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteArtwork = async (id: number) => {
+    try {
+      await adminService.deleteArtwork(id);
+      setArtworks(artworks.filter(artwork => artwork.id !== id));
+      setError(''); // Limpiar error si había alguno
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage = error.response?.data?.message || 'Error al eliminar la obra';
+      setError(errorMessage); // ← Usar el mismo estado
     }
   };
 
@@ -56,11 +70,8 @@ export default function ArtworksPage() {
         </Link>
       </div>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mb-6">
-          {error}
-        </div>
-      )}
+      {/* Único mensaje de error */}
+      <ErrorMessage message={error} />
 
       {/* Grid de obras */}
       {artworks.length === 0 ? (
@@ -89,31 +100,36 @@ export default function ArtworksPage() {
               <div className="h-48 bg-gray-100 relative overflow-hidden">
                 {artwork.imageUrl ? (
                   <>
-                  <Image 
-                    src={artwork.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover blur-lg"
-                  />
-                  <Image 
-                    src={artwork.imageUrl}
-                    alt={artwork.title}
-                    width={300}
-                    height={300}
-                    className="object-contain mx-auto h-full relative z-10"
-                  />
+                    <Image 
+                      src={artwork.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover blur-lg"
+                    />
+                    <Image 
+                      src={artwork.imageUrl}
+                      alt={artwork.title}
+                      width={300}
+                      height={300}
+                      className="object-contain mx-auto h-full relative z-10"
+                    />
                   </>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <ImageIcon />
+                    <ImageIcon className="w-12 h-12" />
                   </div>
                 )}
               </div>
 
               {/* Información */}
               <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-gray-900 mb-2 justify-between flex items-center">
                   {artwork.title}
+                  <DeleteButton
+                    id={artwork.id}
+                    type="artwork"
+                    onDelete={handleDeleteArtwork}
+                  />
                 </h3>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                   {artwork.description}

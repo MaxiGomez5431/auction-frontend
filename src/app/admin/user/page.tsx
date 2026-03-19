@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { adminService } from '@/services/admin.service';
 import { User } from '../../../types/types';
 import { Users, Mail, Shield, Calendar, CheckCircle, XCircle, Search, User as UserIcon } from 'lucide-react';
+import { DeleteButton } from '@/components/ui/DeleteButton';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -49,6 +50,11 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteUser = async (id: number) => {
+    await adminService.deleteUser(id);
+    setUsers(users.filter(user => user.id !== id));
   };
 
   const toggleVerification = async (userId: number, currentStatus: boolean) => {
@@ -214,12 +220,19 @@ export default function UsersPage() {
                     <p className="text-xs text-gray-500">ID: {user.id}</p>
                   </div>
                 </div>
+
                 {user.isAdmin && (
                   <span className="flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
                     <Shield className="w-3 h-3 mr-1" />
                     Admin
                   </span>
                 )}
+
+                <DeleteButton
+                  id={user.id}
+                  type="user"
+                  onDelete={handleDeleteUser}
+                />
               </div>
 
               {/* Cuerpo de la card */}
