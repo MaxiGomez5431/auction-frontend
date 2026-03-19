@@ -3,7 +3,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { Auction } from '@/types/types';
-import { Coins, Star, User } from 'lucide-react';
+import { Star, User } from 'lucide-react';
 
 interface AuctionBidsListProps {
   auction: Auction; // El auction ya incluye bids[]

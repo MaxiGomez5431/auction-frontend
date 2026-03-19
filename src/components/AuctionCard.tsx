@@ -87,7 +87,7 @@ export function AuctionCard({ auction }: AuctionCardProps) {
           {/* Precio actual */}
           <div className="">
             <p className="text-sm text-gray-500">Precio actual</p>
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-blue-600 line-clamp-1">
               ${currentPrice.toLocaleString()}
             </p>
           </div>

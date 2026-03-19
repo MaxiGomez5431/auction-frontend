@@ -135,21 +135,21 @@ export function AuctionDetails({ auction }: AuctionDetailsProps) {
                 <p className="text-sm text-gray-500 mb-1 flex items-center">
                   Precio base
                 </p>
-                <p className="text-3xl font-bold text-gray-700">
+                <p className="text-xl font-bold text-gray-700">
                   ${auction.startingPrice.toLocaleString()}
                 </p>
               </div>
 
               {/* Precio actual */}
               <div className="bg-blue-50 p-5 rounded-xl border-2 border-blue-200">
-                <p className="text-sm text-blue-600 mb-1 flex items-center">
+                <p className="text-sm text-blue-600 mb-1 flex items-center ">
                   Precio actual
                 </p>
-                <p className="text-4xl font-bold text-blue-600">
+                <p className="text-xl font-bold text-blue-600 truncate title">
                   ${currentPrice.toLocaleString()}
                 </p>
                 {auction.currentBid && (
-                  <p className="text-xs text-blue-500 mt-1">
+                  <p className="text-xs text-blue-500 mt-1 truncate">
                     {auction.bids?.length} puja{auction.bids?.length !== 1 ? 's' : ''}
                   </p>
                 )}
@@ -160,16 +160,16 @@ export function AuctionDetails({ auction }: AuctionDetailsProps) {
             <div className="bg-purple-50 p-5 rounded-xl border border-purple-200">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-purple-600 mb-1 flex items-center">
+                  <p className="text-sm text-purple-600 mb-1 flex items-center truncate">
                     Incremento mínimo
                   </p>
-                  <p className="text-2xl font-bold text-purple-600">
+                  <p className="text-2xl font-bold text-purple-600 truncate">
                     ${auction.minimumIncrement.toLocaleString('es-ES')}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-purple-600">Próxima oferta mínima</p>
-                  <p className="text-xl font-semibold text-purple-700">
+                  <p className="text-xl font-semibold text-purple-700 line-clamp-1">
                     ${(currentPrice + auction.minimumIncrement).toLocaleString('es-ES')}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export function AuctionDetails({ auction }: AuctionDetailsProps) {
 
             {auction.status === 'FINISHED' && auction.currentBid && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <p className="text-green-700 text-sm flex items-center">
+                <p className="text-green-700 text-sm flex items-center line-clamp-1">
                   Subasta finalizada - Ganador con puja de ${auction.currentBid.amount}
                 </p>
               </div>

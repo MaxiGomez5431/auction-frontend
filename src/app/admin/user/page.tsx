@@ -6,6 +6,7 @@ import { adminService } from '@/services/admin.service';
 import { User } from '../../../types/types';
 import { Users, Mail, Shield, Calendar, CheckCircle, XCircle, Search, User as UserIcon } from 'lucide-react';
 import { DeleteButton } from '@/components/ui/DeleteButton';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -14,6 +15,7 @@ export default function UsersPage() {
   const [updating, setUpdating] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'verified' | 'unverified'>('all');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     loadUsers();
@@ -46,6 +48,7 @@ export default function UsersPage() {
       const data = await adminService.getAllUsers();
       setUsers(data);
     } catch (error) {
+      setError('Error al cargar los usuarios');
       console.error('Error loading users:', error);
     } finally {
       setLoading(false);
@@ -53,12 +56,27 @@ export default function UsersPage() {
   };
 
   const handleDeleteUser = async (id: number) => {
-    await adminService.deleteUser(id);
-    setUsers(users.filter(user => user.id !== id));
+    setError(''); // Limpiar error anterior
+    try {
+      await adminService.deleteUser(id);
+      setUsers(users.filter(user => user.id !== id));
+    } catch (err) {
+      interface AxiosError {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      }
+      const error = err as AxiosError;
+      const errorMessage = error.response?.data?.message || 'Error al eliminar el usuario';
+      setError(errorMessage);
+    }
   };
 
   const toggleVerification = async (userId: number, currentStatus: boolean) => {
     setUpdating(userId);
+    setError(''); // Limpiar error anterior
 
     try {
       const response = await adminService.updateUserVerification(userId, {
@@ -71,8 +89,17 @@ export default function UsersPage() {
           : user
       ));
 
-    } catch (error) {
-      console.error('Error updating user:', error);
+    } catch (err) {
+      interface AxiosError {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      }
+      const error = err as AxiosError;
+      const errorMessage = error.response?.data?.message || 'Error al actualizar verificación';
+      setError(errorMessage);
     } finally {
       setUpdating(null);
     }
@@ -103,6 +130,9 @@ export default function UsersPage() {
           Gestiona la verificación de usuarios
         </p>
       </div>
+
+      {/* Mensaje de error */}
+      <ErrorMessage message={error} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
@@ -199,7 +229,7 @@ export default function UsersPage() {
                 user.isVerified ? 'border-green-200' : 'border-yellow-200'
               }`}
             >
-              {/* Header de la card con color según estado */}
+              {/* Header de la card */}
               <div className={`px-4 py-3 ${
                 user.isVerified ? 'bg-green-50' : 'bg-yellow-50'
               } border-b flex items-center justify-between`}>
@@ -221,29 +251,28 @@ export default function UsersPage() {
                   </div>
                 </div>
 
-                {user.isAdmin && (
-                  <span className="flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
-                    <Shield className="w-3 h-3 mr-1" />
-                    Admin
-                  </span>
-                )}
-
-                <DeleteButton
-                  id={user.id}
-                  type="user"
-                  onDelete={handleDeleteUser}
-                />
+                <div className="flex items-center gap-2">
+                  {user.isAdmin && (
+                    <span className="flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
+                      <Shield className="w-3 h-3 mr-1" />
+                      Admin
+                    </span>
+                  )}
+                  <DeleteButton
+                    id={user.id}
+                    type="user"
+                    onDelete={handleDeleteUser}
+                  />
+                </div>
               </div>
 
-              {/* Cuerpo de la card */}
+              {/* Cuerpo de la card (resto igual) */}
               <div className="p-4 space-y-3">
-                {/* Email */}
                 <div className="flex items-center text-sm">
                   <Mail className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
                   <span className="text-gray-600 truncate">{user.email}</span>
                 </div>
 
-                {/* Fecha de registro */}
                 <div className="flex items-center text-sm">
                   <Calendar className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
                   <span className="text-gray-600">
@@ -251,7 +280,6 @@ export default function UsersPage() {
                   </span>
                 </div>
 
-                {/* Estado de verificación */}
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center">
                     {user.isVerified ? (
@@ -267,7 +295,6 @@ export default function UsersPage() {
                     )}
                   </div>
 
-                  {/* Botón de acción */}
                   <button
                     onClick={() => toggleVerification(user.id, user.isVerified)}
                     disabled={updating === user.id}
